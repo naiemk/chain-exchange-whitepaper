@@ -46,19 +46,29 @@ The obvious question here is what motivates Mike to converts his Bitcoins to *Fe
 
 For the *Ferrum* network to act as a decentralized exchange, it needs to be able to talk to external network. The implementation of Ferrum network allows this by utilizing a plugin model. Every plugin has a unique identifier, a version and a signature. It then implements the *Ferrum* network interface. Nodes may adopt a plugin for an external network. There might be several plugins for an external network such as Bitcoin. It would be up to the community to use any of them. Unreliable plugins would be rejected by the community. 
 
-Plugins also define the proof of burn addresses as a mean of generating *Fe*s. Hence it is important for the community to adopt reliable plugins or a bad actor can use his personal wallet for the proof of burn address and use all the external currency that were supposed to be burned but weren't. A node could be several plugins some might include proof of burn addresses and some might not. Nodes can also choose to use multiple plugins with an *AND* or some other voting mechanism for validating external transactions (hence, partial validation). 
+Plugins also define the proof of burn addresses as a mean of generating *Fe*s. Hence it is important for the community to adopt reliable plugins or a bad actor can use his personal wallet for the proof of burn address and use all the external currency that were supposed to be burned but weren't. Nodes can also choose to use multiple plugins with an *AND* or some other voting mechanism for validating external transactions (For example, one can use the validation result from three different Bitcoin plugins before issuing a *Fe(Bitcoin)* transaction for increased security). 
 
-Transactions originated from new plugin that are not widely accepted would still be validated by normal nodes, however; if a node is validating a transaction does not have the appropriate plugin, it only validates the chain up to the network edge. To make sure the edge transactions are also validated, nodes that have a plugin installed, in addition to the normal validation, they take part in validation of edge transactions in the network. 
+Transactions originated from new plugin that are not widely accepted would still be validated by normal nodes, however; if a node is validating a transaction does not have the appropriate plugin, it only validates the chain up to the network edge. To issue an edge transaction, one would need to do some proof of work. This will help prevent spamming the network with invalid edge transactions.
 
-*Ferrum* implementation would have hard-coded names for external networks (e.g. Bitcoin, Etherium, etc.). Plugins can introduce new external networks by extending the default list. Corollary to allowing custom plugins is that the consistency and uniqueness of external networks cannot be guaranteed. Each plugin has a different level of security.
+Although an edge transactions cannot be confirmed by users that do not have the appropriate plugin installed, they can be included in the validation process. There is little incentive for a bad actor to create invalid edge transactions (i.e. generating *Fe(Bitcoin)* without burning any Bitcoin). The bad actor needs to create proof of work, however the created *Fe(Bitcoin)*s as the result of this edge transactions would be invalid. Although other nodes without the appropriate plugin could validate these edge transactions, an eventual buyer of *Fe(Bitcoin)* would inevitably have the right plugin installed and can confirm that those *Fe(Bitcoin)*s are invalid. Hence a bad actor cannot generate value from thin air. 
 
-A bad actor could create a malicious plugin to generate *Fe*s based on a worthless external network (BadCoin). If the bad actor wants to convert his worthless *Fe*s to more valuable *Fe*s, he should find a person that is willing to engage in such transaction. Bad actor can only generate and void *Fe(BadCoin)* which would have no real benefit for him. However, if BadCoin at some point becomes a popular coin, more and more nodes on the network would be willing to adopt its plugin and more and more people would be willing to transact *Fe(BadCoin)* with for example *Fe(BitCoin)*. Technically any mature or experimental crypto currency can be exchanged on *Ferrum* without a need to trust or ask permission from any person or entity as long as enough people are willing to do so.
+We the notation *Fe(0)* to call a worthless *Fe*. To a node without plugin *X*, *Fe(X)* is equal to *Fe(0)* and acts like an empty transaction. Generating *Fe(0)*s is a way to contribute to the network security since to generate one *Fe(0)* one has to validate at least two other transactions.
+
+*Ferrum* implementation would have hard-coded names for external networks (e.g. Bitcoin, Etherium, etc.). Plugins can introduce new external networks by extending the default list. It would be up to the community to ensure the validity of a plugin and uniqueness of the names other than the ones in the reference implementation.  
+
+With external network plugins, any mature or experimental crypto currency can be exchanged on *Ferrum* without a need to trust or ask permission from any person or entity as long as enough people are willing to do so.
 
 ### Edge Transactions
 
 ### Proof of Burn
 
 ### Futures
+
+Two type of futures:
+- Edge futures
+  -> 
+- Exchange futures (inside network)
+  -> One user creates an special exchange address with a timeout. Two parties send *Xs* and *Xr* {amount, rollback address, other party (target) address, target amount} to this special address. Funds cannot be spend before timeout + buffer. By timeout, the transaction is considered valid or void. If the transaction is valid, the funds are considered as sent to the target addresses, e.g. *Xc.amount -> Xr.target address and Xc.amount -> Xc.target address. If the transaction is void, the funds are considered sent to each parties rollback address. The validity of transaction after timeout is calculated by ensuring the following conditions: *X0.amount == X1.target amount and X0.target address == X1.address). If any of the values do not match the transaction is considered void.
 
 ### (Tracing the) Value of *Fe*
 
