@@ -13,7 +13,7 @@ In this paper we propose a distributed exchange protocol called ***Ferrum*** tha
 
 In the next few paragraphs we present the several challenges in the world of crypto-currencies that motivated the design of *Ferrum*:
 
-- **Bitcoin is not a good curency but is a good store of value**. Bitcoin and a few other major crypto-currencies have established themselves as store of value. This is great news for the world of crypto-currencies. We can think of Bitcoin as **gold** in the real-world. The scarcity of gold has made it a global store of value that can be used to back the value of other assets, however gold cannot be practically used in day-to-day transaction. Although it is possible to conceive a world in which people buy their morning coffee by passing a miniscule particle of gold to the barista, it is not a probable outcome. We need a crypto-currency (*Fe*) that can be backed by (pegged to) Bitcoin that can scale and can be transacted with ***zero*** fee, and hopefully without producing too much greenhouse gases in the process. *Fe* should be freely and reliably converted to and from Bitcoin, or other crypto-currencies without volatility. It is important for the pegged transaction to present no volatility in value in relation to the external crypto-currency it represents, however there could be a fee for transacting between *Fe* and the external crypto-currency. The promise of the **Ferrum** network is that with enough liquidity people would not need to transfer their currencies back to the external crypto-currency often. *Fe* can be used as a token for spending Bitcoin (BTC) or other crypto-currencies. For example if a coffee costs *BTC* 0.0002, consumer will pay the amount of coffee in *BTC* to the seller, but the transaction happens in milliseconds over the *Ferrum* network, hence, no transaction fee.
+- **Bitcoin is not a good currency but is a good store of value**. Bitcoin and a few other major crypto-currencies have established themselves as store of value. This is great news for the world of crypto-currencies. We can think of Bitcoin as **gold** in the real-world. The scarcity of gold has made it a global store of value that can be used to back the value of other assets, however gold cannot be practically used in day-to-day transaction. Although it is possible to conceive a world in which people buy their morning coffee by passing a miniscule particle of gold to the barista, it is not a probable outcome. We need a crypto-currency (*Fe*) that can be backed by (pegged to) Bitcoin that can scale and can be transacted with ***zero*** fee, and hopefully without producing too much greenhouse gases in the process. *Fe* should be freely and reliably converted to and from Bitcoin, or other crypto-currencies without volatility. It is important for the pegged transaction to present no volatility in value in relation to the external crypto-currency it represents, however there could be a fee for transacting between *Fe* and the external crypto-currency. The promise of the **Ferrum** network is that with enough liquidity people would not need to transfer their currencies back to the external crypto-currency often. *Fe* can be used as a token for spending Bitcoin (BTC) or other crypto-currencies. For example if a coffee costs *BTC* 0.0002, consumer will pay the amount of coffee in *BTC* to the seller, but the transaction happens in milliseconds over the *Ferrum* network, hence, no transaction fee.
 
 - **Exchanges are not decentralized** The promise of block chain and crypto-currencies were to provide a decentralized network for peer to peer transactions, but in reality majority of crypto-currencies are held and transacted at a few big companies and exchanges such as Coinbase. The current situation is far from the premised world of decentralized transactions and community owned currencies and is more like a traditional, but less effective banking system (hence scalability issues and expensive transaction fees). There is clearly a need for a decentralized exchange where once can contribute to the system without no need to trust or rely on giant corporations. This is by far the biggest failure of crypto currencies and the need to address this problem is felt by the community and consumers. Ideally between the multi-billion dollar crypto currency world, transfer of value should be able to happen without the need to resort back to fiat currencies or traditional trust-based organizations. *Ferrum* network can fill this gap by providing an intermediate network for exchange of values across different crypto-currencies.
 
@@ -60,11 +60,30 @@ With external network plugins, any mature or experimental crypto currency can be
 
 ### Edge Transactions
 
+There are two essential types of transaction in the *Ferrum* network. The internal transaction which can be understood by all the nodes, and the edge transactions which are transactions that rely on validation of another transaction in external networks. The edge transactions can only be validated by the nodes that are running the appropriate plugin.
+
+An edge transaction needs to be validated with two internal transaction immediately to be validated. One from sender and another from reviver. Each of these transactions require proof of work attached to them which helps prevent spamming the network with edge transaction.
+
+> We implement edge transactions as two future transactions linked together. The Edge futures are described in more details later in this section. 
+
 ### Proof of Burn
+
+Proof of burn is the main method for creating *Fe*s in the Ferrum network. We define proof of burn as **Sending funds to a wallet such that the funds become provably not spendable afterwards**.
+
+Let *X* be than external network to *Ferrum*. Let *w_X_0* be the wallet in the *X* network that is not spendable. Any funds sent to *w_X_0* will be effectively disappeared. Let *w_X_p* be the wallet *p* in network *X*. One can generate *Fe(X)* by burning funds in *X* which means transferring funds from *w_X_p* to *w_X_0*, then claiming equivalent amount of *Fe(X)* pointing to the relevant transaction on network *X*.
+
+Above transaction on the *X* network is not enough to constitute a safe proof of work mechanism. Because any person can watch transactions coming to *w_X_0* and immediately claim the equivalent *Fe(X)*s as theirs. To mitigate this problem we should modify the proof of burn protocol as follows:
+
+> Owner of funds *w_X_p*, first; creates a wallet *w_X_p'* in network *X*. She then creates a wallet *p'* in *Ferrum* network and claims her *Fe(X)*s. At this point these claimed *Fe(X)*s are worthless because they are not backed by a transaction *w_X_p'* -> *w_X_0*. Now she initiates a transaction from *w_X_p* to *w_X_p'* then another transaction from *w_X_p'* to *w_X_0*. Once these two transactions complete, her *Fe(X)*s become valid and she will be spend them.
+
+In the above proof of burn protocol, anybody can see the newly claimed *Fe(X)* on the *Ferrum* network, but this information does not make it any easier to steal funds.
 
 ### Futures
 
-Two type of futures:
+A future, is a transaction that executes in some future time. *Ferrum* supports three special future protocols to accomplish two tasks. To allow exchange of funds with external networks, and to allow exchange of funds within the *Ferrum* network. Proof of burn futures and Edge futures facilitate exchange of funds with external networks, while Exchange futures facilitate exchange of funds within the *Ferrum* network.
+
+Three type of futures:
+- Proof of burn future
 - Edge futures
   -> 
 - Exchange futures (inside network)
@@ -83,6 +102,15 @@ Two type of futures:
 
 
 ### *Fe* Value Validation Algorithm
+
+## Piggybacking on IOTA Tangle
+
+### Split Transaction Data
+
+### Challenges
+
+#### Split Transaction Attack
+
 
 
 ## Conclusion
